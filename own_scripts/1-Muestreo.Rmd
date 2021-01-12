@@ -1,0 +1,143 @@
+---
+title: "1-Muestreo"
+author: "Jhan K. Gil M."
+date: "7/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Muestreo aleatorio simple
+
+Se puede establecer la semilla de `R` para las funciones aleatorias.
+
+```{r}
+set.seed(110121)
+```
+
+### Con reposición
+
+De los valores desde 1 hasta 150 tomar 15
+
+```{r}
+m = sample(1:150,20,replace = TRUE)
+m_iris = iris[m,]
+m_iris
+```
+
+### Sin reposición
+
+```{r}
+m = sample(1:150,20,replace = FALSE)
+m_iris = iris[m,]
+m_iris
+```
+
+## Muestreo sistemático
+
+Primera flor
+```{r}
+(primera = sample(1:150,1))
+```
+
+Incremento
+```{r sistematico}
+inc = floor(150/10)
+``` 
+
+Florez de la muestra
+
+```{r}
+elegidas = seq(from=primera, by=inc, length.out = 10)
+```
+
+Transformar etiquetas para que estén dentro de la muestra
+
+```{r}
+(elegidas = elegidas%%150)
+```
+
+Obtener las muestras
+```{r}
+(m_iris_2 = iris[elegidas,])
+```
+
+## Muestreo estratificado
+
+El dataset Iris ya se encuentra estratificado. Tomar muestras iguales en cada estrato.
+
+```{r}
+muestra_setosa = sample(1:50,4,replace = TRUE)
+muestra_versicolor = sample(51:100,4,replace = TRUE)
+muestra_virginica = sample(101:150,4,replace = TRUE)
+
+(m_estra = rbind(iris[muestra_setosa,], iris[muestra_versicolor,], iris[muestra_virginica,]))
+```
+
+## Muestreo conglomerado (clusters)
+
+```{r}
+#install.packages('faraway')
+library(faraway)
+(head(worldcup))
+```
+
+Nùmero de paises en el dataset
+
+```{r}
+(unique(worldcup$Team))
+```
+
+Elegir cuatro paises alatoriamente
+
+```{r}
+num_paises_elegidos = sample(1:32,4,replace=FALSE)
+(paises_elegidos = unique(worldcup$Team)[num_paises_elegidos])
+```
+
+```{r}
+m_worldcup = worldcup[worldcup$Team%in%paises_elegidos,]
+head(m_worldcup,8)
+```
+
+## Muestreo polietápico
+
+Obtener las subtablas de los paises elegidos
+
+```{r}
+worldcup_pais1 = worldcup[worldcup$Team==paises_elegidos[1],]
+worldcup_pais2 = worldcup[worldcup$Team==paises_elegidos[2],]
+worldcup_pais3 = worldcup[worldcup$Team==paises_elegidos[3],]
+worldcup_pais4 = worldcup[worldcup$Team==paises_elegidos[4],]
+```
+
+
+Elegir cinco jugadores de cada país
+```{r}
+jugadores_pais1 = sample(1:dim(worldcup_pais1)[1],5,replace=FALSE)
+jugadores_pais2 = sample(1:dim(worldcup_pais2)[1],5,replace=FALSE)
+jugadores_pais3 = sample(1:dim(worldcup_pais3)[1],5,replace=FALSE)
+jugadores_pais4 = sample(1:dim(worldcup_pais4)[1],5,replace=FALSE)
+```
+
+Juntar los resultados
+```{r}
+muestra.worldcup.pol = rbind(worldcup_pais1[jugadores_pais1,],
+                             worldcup_pais2[jugadores_pais2,],
+                             worldcup_pais3[jugadores_pais3,],
+                             worldcup_pais4[jugadores_pais4,])
+
+head(muestra.worldcup.pol,12)
+```
+
+
+
+
+
+
+
+
+
+
